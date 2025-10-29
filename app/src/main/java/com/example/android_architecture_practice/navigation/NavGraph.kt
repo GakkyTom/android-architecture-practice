@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.android_architecture_practice.ui.edit.EditScreen
 import com.example.android_architecture_practice.ui.gallery.GalleryScreen
 import com.example.android_architecture_practice.ui.home.HomeScreen
@@ -31,14 +32,20 @@ fun AppNavGraph(navController: NavHostController, sharedAppViewModel: SharedAppV
 
         composable("gallery") {
             GalleryScreen(
-                onNavigateToEdit = {
-                    navController.navigate("edit")
+                onImageClick = { iconName ->
+                    navController.navigate("edit/$iconName")
                 }
             )
         }
 
-        composable("edit") {
-            EditScreen()
+        composable(
+            "edit/{iconName}",
+            arguments = listOf(navArgument("iconName") { defaultValue = "" })
+        ) { backStackEntry ->
+            val iconName = backStackEntry.arguments?.getString("iconName") ?: ""
+            EditScreen(
+                iconName = iconName
+            )
         }
     }
 }
