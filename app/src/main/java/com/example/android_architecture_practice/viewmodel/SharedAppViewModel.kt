@@ -1,5 +1,6 @@
 package com.example.android_architecture_practice.viewmodel
 
+import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.android_architecture_practice.data.model.Photo
@@ -16,11 +17,18 @@ class SharedAppViewModel @Inject constructor(
     private val repository: PhotoRepository
 ) : ViewModel() {
 
+    private val _capturedImage = MutableStateFlow<Bitmap?>(null)
+    val capturedImage = _capturedImage.asStateFlow()
+
     private val _photos = MutableStateFlow<List<Photo>>(emptyList())
     val photo: StateFlow<List<Photo>> = _photos.asStateFlow()
 
     private val _selectedPhoto = MutableStateFlow<Photo?>(null)
     val selectedPhoto: StateFlow<Photo?> = _selectedPhoto.asStateFlow()
+
+    fun setCapturedImage(bitmap: Bitmap) {
+        _capturedImage.value = bitmap
+    }
 
     fun loadGallery() {
         viewModelScope.launch {

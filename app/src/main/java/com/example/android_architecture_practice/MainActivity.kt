@@ -23,6 +23,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.android_architecture_practice.navigation.AppNavGraph
+import com.example.android_architecture_practice.ui.shoot.ShootViewModel
 import com.example.android_architecture_practice.viewmodel.SharedAppViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -30,6 +31,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val sharedAppViewModel: SharedAppViewModel by viewModels()
+    private val shootViewModel: ShootViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +39,11 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
             MaterialTheme {
                 Surface(color = MaterialTheme.colorScheme.background) {
-                    AndroidArchitecturePracticeApplication(navController, sharedAppViewModel)
+                    AndroidArchitecturePracticeApplication(
+                        navController,
+                        sharedAppViewModel,
+                        shootViewModel
+                    )
                 }
             }
         }
@@ -48,7 +54,8 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun AndroidArchitecturePracticeApplication(
     navController: NavHostController,
-    sharedAppViewModel: SharedAppViewModel
+    sharedAppViewModel: SharedAppViewModel,
+    shootViewModel: ShootViewModel
 ) {
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
     val destination = currentBackStackEntry?.destination?.route ?: "home"
@@ -81,7 +88,11 @@ fun AndroidArchitecturePracticeApplication(
         }
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
-            AppNavGraph(navController = navController, sharedAppViewModel = sharedAppViewModel)
+            AppNavGraph(
+                navController = navController,
+                sharedAppViewModel = sharedAppViewModel,
+                shootViewModel = shootViewModel
+            )
         }
     }
 }
