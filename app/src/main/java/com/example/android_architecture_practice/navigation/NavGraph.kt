@@ -27,13 +27,7 @@ fun AppNavGraph(
         }
 
         composable("shoot") {
-            ShootScreen(
-                sharedAppViewModel = sharedAppViewModel,
-                shootViewModel = shootViewModel,
-                onNavigateToEdit = {
-                    navController.navigate("edit_from_camera")
-                }
-            )
+            ShootScreen(shootViewModel = shootViewModel)
         }
 
         composable("gallery") {

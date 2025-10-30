@@ -1,17 +1,16 @@
 package com.example.android_architecture_practice.ui.shoot
 
-import android.graphics.Bitmap
-import android.widget.Toast
 import androidx.camera.compose.CameraXViewfinder
-import androidx.camera.core.ImageCapture
-import androidx.camera.core.ImageCaptureException
-import androidx.camera.core.ImageProxy
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,11 +21,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.android_architecture_practice.viewmodel.SharedAppViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
@@ -34,11 +31,8 @@ import com.google.accompanist.permissions.shouldShowRationale
 
 @Composable
 fun ShootScreen(
-    sharedAppViewModel: SharedAppViewModel,
     shootViewModel: ShootViewModel,
-    onNavigateToEdit: () -> Unit
 ) {
-    val context = LocalContext.current
     CameraPreviewScreen(shootViewModel)
 }
 
@@ -91,36 +85,18 @@ fun CameraPreviewContent(
     }
 
     surfaceRequest?.let { request ->
-        CameraXViewfinder(
-            surfaceRequest = request,
-            modifier = modifier
-        )
-    }
-}
+        Box(contentAlignment = Alignment.BottomCenter) {
+            CameraXViewfinder(
+                surfaceRequest = request,
+                modifier = modifier.fillMaxSize()
+            )
 
-/**
- * 撮影してBitmapをコールバックに返す
- */
-private fun takePicture(
-    imageCapture: ImageCapture,
-    onBitmapCaptured: (Bitmap) -> Unit,
-    context: android.content.Context
-) {
-    imageCapture.takePicture(
-        ContextCompat.getMainExecutor(context),
-        object : ImageCapture.OnImageCapturedCallback() {
-            override fun onCaptureSuccess(image: ImageProxy) {
-                val buffer = image.planes[0].buffer
-                val bytes = ByteArray(buffer.remaining())
-                buffer.get(bytes)
-                val bitmap = android.graphics.BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-                image.close()
-                onBitmapCaptured(bitmap)
-            }
-
-            override fun onError(exception: ImageCaptureException) {
-                Toast.makeText(context, "撮影失敗: ${exception.message}", Toast.LENGTH_SHORT).show()
+            Button(
+                modifier = Modifier.navigationBarsPadding(),
+                onClick = { viewModel.takePicture(context) },
+            ) {
+                Icons.Default.AddCircle
             }
         }
-    )
+    }
 }
