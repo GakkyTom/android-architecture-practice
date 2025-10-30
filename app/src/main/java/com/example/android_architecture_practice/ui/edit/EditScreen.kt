@@ -23,7 +23,7 @@ import com.example.android_architecture_practice.viewmodel.SharedAppViewModel
 @Composable
 fun EditScreen(
     sharedAppViewModel: SharedAppViewModel,
-    iconName: String
+    filePath: String
 ) {
     val bitmap by sharedAppViewModel.capturedImage.collectAsState()
     Column(
