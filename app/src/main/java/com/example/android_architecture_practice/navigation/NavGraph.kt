@@ -1,5 +1,6 @@
 package com.example.android_architecture_practice.navigation
 
+import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -7,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.android_architecture_practice.ui.edit.EditScreen
 import com.example.android_architecture_practice.ui.gallery.GalleryScreen
+import com.example.android_architecture_practice.ui.gallery.GalleryViewModel
 import com.example.android_architecture_practice.ui.home.HomeScreen
 import com.example.android_architecture_practice.ui.shoot.ShootScreen
 import com.example.android_architecture_practice.ui.shoot.ShootViewModel
@@ -16,7 +18,8 @@ import com.example.android_architecture_practice.viewmodel.SharedAppViewModel
 fun AppNavGraph(
     navController: NavHostController,
     sharedAppViewModel: SharedAppViewModel,
-    shootViewModel: ShootViewModel
+    shootViewModel: ShootViewModel,
+    galleryViewModel: GalleryViewModel
 ) {
     NavHost(navController, startDestination = "home") {
         composable("home") {
@@ -32,20 +35,25 @@ fun AppNavGraph(
 
         composable("gallery") {
             GalleryScreen(
-                onImageClick = { iconName ->
-                    navController.navigate("edit/$iconName")
+                viewModel = galleryViewModel,
+                onImageClick = { filePath ->
+                    navController.navigate(
+                        // ファイルパスにスラッシュなどの特殊文字が含まれる可能性があるためエンコードする
+                        "edit/${Uri.encode(filePath)}"
+                    )
                 }
             )
         }
 
         composable(
-            "edit/{iconName}",
-            arguments = listOf(navArgument("iconName") { defaultValue = "" })
+            "edit/{filePath}",
+            arguments = listOf(navArgument("filePath") { defaultValue = "" })
         ) { backStackEntry ->
-            val iconName = backStackEntry.arguments?.getString("iconName") ?: ""
+            val encodedFilePath = backStackEntry.arguments?.getString("filePath") ?: ""
+            val decodedFilePath = Uri.decode(encodedFilePath)
             EditScreen(
                 sharedAppViewModel,
-                iconName = iconName
+                decodedFilePath
             )
         }
     }

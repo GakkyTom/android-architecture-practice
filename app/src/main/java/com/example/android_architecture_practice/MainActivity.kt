@@ -23,6 +23,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.android_architecture_practice.navigation.AppNavGraph
+import com.example.android_architecture_practice.ui.gallery.GalleryViewModel
 import com.example.android_architecture_practice.ui.shoot.ShootViewModel
 import com.example.android_architecture_practice.viewmodel.SharedAppViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -32,6 +33,7 @@ class MainActivity : ComponentActivity() {
 
     private val sharedAppViewModel: SharedAppViewModel by viewModels()
     private val shootViewModel: ShootViewModel by viewModels()
+    private val galleryViewModel: GalleryViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +44,8 @@ class MainActivity : ComponentActivity() {
                     AndroidArchitecturePracticeApplication(
                         navController,
                         sharedAppViewModel,
-                        shootViewModel
+                        shootViewModel,
+                        galleryViewModel
                     )
                 }
             }
@@ -55,7 +58,8 @@ class MainActivity : ComponentActivity() {
 fun AndroidArchitecturePracticeApplication(
     navController: NavHostController,
     sharedAppViewModel: SharedAppViewModel,
-    shootViewModel: ShootViewModel
+    shootViewModel: ShootViewModel,
+    galleryViewModel: GalleryViewModel
 ) {
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
     val destination = currentBackStackEntry?.destination?.route ?: "home"
@@ -91,7 +95,8 @@ fun AndroidArchitecturePracticeApplication(
             AppNavGraph(
                 navController = navController,
                 sharedAppViewModel = sharedAppViewModel,
-                shootViewModel = shootViewModel
+                shootViewModel = shootViewModel,
+                galleryViewModel = galleryViewModel
             )
         }
     }
