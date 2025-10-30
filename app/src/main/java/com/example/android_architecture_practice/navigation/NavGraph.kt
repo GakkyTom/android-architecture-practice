@@ -9,10 +9,15 @@ import com.example.android_architecture_practice.ui.edit.EditScreen
 import com.example.android_architecture_practice.ui.gallery.GalleryScreen
 import com.example.android_architecture_practice.ui.home.HomeScreen
 import com.example.android_architecture_practice.ui.shoot.ShootScreen
+import com.example.android_architecture_practice.ui.shoot.ShootViewModel
 import com.example.android_architecture_practice.viewmodel.SharedAppViewModel
 
 @Composable
-fun AppNavGraph(navController: NavHostController, sharedAppViewModel: SharedAppViewModel) {
+fun AppNavGraph(
+    navController: NavHostController,
+    sharedAppViewModel: SharedAppViewModel,
+    shootViewModel: ShootViewModel
+) {
     NavHost(navController, startDestination = "home") {
         composable("home") {
             HomeScreen(
@@ -22,12 +27,7 @@ fun AppNavGraph(navController: NavHostController, sharedAppViewModel: SharedAppV
         }
 
         composable("shoot") {
-            ShootScreen(
-                onPhotoCaptured = { photo ->
-                    sharedAppViewModel.savePhoto(photo)
-                    navController.navigate("edit")
-                }
-            )
+            ShootScreen(shootViewModel = shootViewModel)
         }
 
         composable("gallery") {
@@ -44,6 +44,7 @@ fun AppNavGraph(navController: NavHostController, sharedAppViewModel: SharedAppV
         ) { backStackEntry ->
             val iconName = backStackEntry.arguments?.getString("iconName") ?: ""
             EditScreen(
+                sharedAppViewModel,
                 iconName = iconName
             )
         }
